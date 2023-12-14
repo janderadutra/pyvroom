@@ -109,8 +109,8 @@ class Input(_vroom.Input):
             instance._from_json(handle.read(), geometry)
         return instance
 
-    def set_geometry(self):
-        return self._set_geometry()
+    def set_geometry(self, geometry_arg):
+        return self._set_geometry(geometry_arg)
 
     def set_amount_size(self, *amount_sizes: int) -> None:
         """Add amount sizes."""
