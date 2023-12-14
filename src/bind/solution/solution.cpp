@@ -102,7 +102,7 @@ void init_solution(py::module_ &m) {
            [](vroom::Solution solution) {
              py::scoped_ostream_redirect stream(
                  std::cout, py::module_::import("sys").attr("stdout"));
-             vroom::io::write_to_json(solution, false, "");
+             vroom::io::write_to_json(solution, true, "");
            })
       .def_readwrite("code", &vroom::Solution::code)
       .def_readwrite("error", &vroom::Solution::error)
