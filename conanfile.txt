@@ -1,6 +1,6 @@
 [requires]
-openssl
-asio
+openssl/3.0.8
+asio/1.21.0
 
 [generators]
 json
