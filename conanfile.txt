@@ -1,3 +1,6 @@
 [requires]
+openssl
+asio
 
 [generators]
+json
