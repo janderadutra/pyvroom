@@ -2,10 +2,8 @@ name: release
 
 on:
   push:
-    tags:
-      - '*'
-    branches-ignore:
-      - '*'
+    branches:
+      - main
 
 jobs:
   build_sdist:
@@ -99,6 +97,7 @@ jobs:
     - uses: softprops/action-gh-release@v1
       with:
           files: dist/*
+          tag_name: v.0.0.1
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
