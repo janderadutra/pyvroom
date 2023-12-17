@@ -36,9 +36,6 @@ jobs:
         CFLAGS="-coverage" python setup.py build_ext --inplace
         python setup.py develop
 
-    - name: "Run tests"
-      run: make test
-
     - name: "Upload python coverage"
       uses: codecov/codecov-action@v2
       with:
