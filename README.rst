@@ -1,6 +1,6 @@
 Python Vehicle Routing Open-source Optimization Machine
 =======================================================
-
+ 
 |gh_action| |codecov| |pypi|
 
 .. |gh_action| image:: https://img.shields.io/github/checks-status/VROOM-Project/pyvroom/main
