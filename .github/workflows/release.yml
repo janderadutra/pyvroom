@@ -30,7 +30,7 @@ jobs:
       matrix:
         include:
           - platform: manylinux2014_x86_64
-            python_version: 3.8
+            python_version: 3.9
             image: quay.io/pypa/manylinux2014_x86_64
 
     steps:
@@ -38,7 +38,7 @@ jobs:
 
       - name: Build Wheels
         run: |
-          docker run --rm -v $(pwd):/io ${matrix.image} /io/scripts/build_wheel.sh
+          docker run --rm -v $(pwd):/io ${{matrix.image}}/io/scripts/build_wheel.sh
         env:
           matrix.image: ${{ matrix.image }}
           python_version: ${{ matrix.python_version }}
