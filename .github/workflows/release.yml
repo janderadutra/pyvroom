@@ -94,7 +94,11 @@ jobs:
         name: artifact
         path: dist
 
-    - uses: pypa/gh-action-pypi-publish@v1.8.10
+    - uses: softprops/action-gh-release@v1
       with:
-        user: jonathf
-        password: ${{ secrets.pypi_password }}
+          files: dist/*
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Exibir URL de download
+      run: echo "URL de Download:https://github.com/${{ github.repository }}/releases/latest"
