@@ -30,10 +30,9 @@ manylinux-x86_64-image = "quay.io/pypa/manylinux2014_x86_64"
 
 [tool.cibuildwheel.linux]
 before-all = """
-dnf makecache --refresh
 dnf update -y
 dnf module enable -y mariadb-devel
-dnf install -y openssl-devel asio-devel glpk
+dnf install -y openssl-devel asio-devel
 """
 
 [[tool.cibuildwheel.overrides]]
@@ -41,7 +40,6 @@ select = "*musllinux*"
 before-all = """
 apk add asio-dev
 apk add openssl-dev
-apk add libglpk-dev
 """
 
 [tool.cibuildwheel.macos]
