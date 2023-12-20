@@ -6,7 +6,6 @@ import numpy
 
 from . import _vroom  # type: ignore
 
-
 class Amount(_vroom.Amount):
     """An array of integers describing multidimensional quantities.
 
