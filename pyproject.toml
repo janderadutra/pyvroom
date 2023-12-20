@@ -30,11 +30,11 @@ manylinux-x86_64-image = "quay.io/pypa/manylinux2014_x86_64"
 
 [tool.cibuildwheel.linux]
 before-all = """
-dnf makecache
-dnf update -y
-dnf install -y epel-release
-dnf module enable -y mariadb-devel
-dnf install -y openssl-devel asio-devel glpk
+yum makecache
+yum update -y
+yum install -y epel-release
+yum module enable -y mariadb-devel
+yum install -y openssl-devel asio-devel glpk
 """
 
 [[tool.cibuildwheel.overrides]]
