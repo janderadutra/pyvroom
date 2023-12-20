@@ -1,6 +1,9 @@
 name: release
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -24,33 +27,58 @@ jobs:
 
   build_wheels:
     name: ${{ matrix.platform }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.image }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - platform: manylinux2014_x86_64
-            python_version: 3.9
-            image: quay.io/pypa/manylinux2014_x86_64
+          - image: ubuntu-latest
+            platform: linux
 
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
 
-      - name: Build Wheels
-        run: |
-          docker run --rm -v $(pwd):/io ${{matrix.image}}/io/scripts/build_wheel.sh
-        env:
-          matrix.image: ${{ matrix.image }}
-          python_version: ${{ matrix.python_version }}
+    - name: Cache Conan
+      id: cache-conan
+      uses: actions/cache@v3
+      if: matrix.platform == 'windows'
+      with:
+        path: |
+          conan_build
+          conan_data
+        key: conan-${{ matrix.image }}-${{ hashFiles('conanfile.txt') }}
 
-      - name: Verify clean directory
-        run: git diff --exit-code
-        shell: bash
+    - name: Configure Python
+      uses: actions/setup-python@v4
+      if: matrix.platform == 'windows' && steps.cache-conan.outputs.cache-hit != 'true'
+      with:
+        python-version: '3.x'
 
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
-        with:
-          path: wheelhouse/*.whl
+    - name: Install Conan
+      if: matrix.image == 'windows-latest' && steps.cache-conan.outputs.cache-hit != 'true'
+      run: |
+        pip install pip --upgrade
+        pip install conan<2.0.0
+        conan profile new default --detect
+        conan profile update "settings.compiler=Visual Studio" default
+        conan profile update "settings.compiler.version=17" default
+        conan config set "storage.path=$env:GITHUB_WORKSPACE/conan_data"
+        conan install --build=openssl --install-folder conan_build .
+
+    - uses: pypa/cibuildwheel@v2.15.0
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.14
+
+    - name: Verify clean directory
+      run: git diff --exit-code
+      shell: bash
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v3
+      with:
+        path: wheelhouse/*.whl
 
   upload:
     name: upload
@@ -58,19 +86,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v2
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: artifact
-          path: dist
+    - uses: actions/download-artifact@v3
+      with:
+        name: artifact
+        path: dist
 
-      - uses: softprops/action-gh-release@v1
-        with:
-            files: dist/*
-            tag_name: v.0.0.2
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: softprops/action-gh-release@v1
+      with:
+          files: dist/*
+          tag_name: v.0.0.3
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Exibir URL de download
-        run: echo "URL de Download:https://github.com/${{ github.repository }}/releases/latest"
+    - name: Exibir URL de download
+      run: echo "URL de Download:https://github.com/${{ github.repository }}/releases/latest"
