@@ -33,8 +33,7 @@ before-all = """
 dnf makecache
 dnf update -y
 dnf module enable -y mariadb-devel
-dnf module enable -y glpk-utils
-dnf install -y openssl-devel asio-devel glpk-utils
+dnf install -y openssl-devel asio-devel glpk-devel
 """
 
 [[tool.cibuildwheel.overrides]]
